@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milton Overton AI Publicist - Approval Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #1a202c;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            color: #718096;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            color: #1a202c;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .stat-card.pending .value {
+            color: #f59e0b;
+        }
+
+        .stat-card.approved .value {
+            color: #10b981;
+        }
+
+        .content-queue {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .queue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .queue-header h2 {
+            color: #1a202c;
+            font-size: 20px;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .connection-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+        }
+
+        .connection-dot.connected {
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .content-item {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .content-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .content-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge.platform {
+            background: #667eea;
+            color: white;
+        }
+
+        .badge.urgency-immediate {
+            background: #ef4444;
+            color: white;
+        }
+
+        .badge.urgency-today {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .badge.urgency-this_week {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .badge.urgency-standard {
+            background: #6b7280;
+            color: white;
+        }
+
+        .qa-scores {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .qa-score {
+            text-align: center;
+            padding: 12px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+
+        .qa-score-label {
+            font-size: 11px;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .qa-score-value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .qa-score-value.excellent {
+            color: #10b981;
+        }
+
+        .qa-score-value.good {
+            color: #3b82f6;
+        }
+
+        .qa-score-value.warning {
+            color: #f59e0b;
+        }
+
+        .content-preview {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #2d3748;
+        }
+
+        .content-context {
+            padding: 12px;
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        .content-context strong {
+            color: #92400e;
+        }
+
+        .content-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-approve {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #059669;
+        }
+
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #dc2626;
+        }
+
+        .btn-edit {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #2563eb;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .empty-state svg {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+
+        .spinner {
+            border: 3px solid #e2e8f0;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 16px;
+            color: #1a202c;
+        }
+
+        .modal-content textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-content textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 8px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 2000;
+            max-width: 400px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-left: 4px solid #10b981;
+        }
+
+        .toast.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .content-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .qa-scores {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Milton Overton AI Publicist</h1>
+            <p>Review and approve AI-generated content</p>
+        </div>
+
+        <div class="stats" id="stats">
+            <div class="stat-card pending">
+                <h3>Pending Approval</h3>
+                <div class="value" id="stat-pending">-</div>
+            </div>
+            <div class="stat-card approved">
+                <h3>Approved This Week</h3>
+                <div class="value" id="stat-approved">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Avg QA Score</h3>
+                <div class="value" id="stat-qa">-</div>
+            </div>
+        </div>
+
+        <div class="content-queue">
+            <div class="queue-header">
+                <h2>Approval Queue</h2>
+                <div class="connection-status">
+                    <div class="connection-dot" id="connection-dot"></div>
+                    <span id="connection-status">Connecting...</span>
+                </div>
+            </div>
+
+            <div id="queue-container">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading approval queue...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div class="modal" id="reject-modal">
+        <div class="modal-content">
+            <h3>Reject Content</h3>
+            <p style="color: #718096; margin-bottom: 16px;">Please provide a reason for rejection:</p>
+            <textarea id="reject-reason" placeholder="e.g., Voice doesn't match Milton's style, Too promotional, etc."></textarea>
+            <div class="modal-actions">
+                <button class="btn btn-reject" onclick="confirmReject()">Confirm Reject</button>
+                <button class="btn" style="background: #e2e8f0; color: #1a202c;" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal" id="edit-modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <h3>Edit Content</h3>
+            <textarea id="edit-content" style="min-height: 300px;"></textarea>
+            <div class="modal-actions">
+                <button class="btn btn-edit" onclick="confirmEdit()">Save & Approve</button>
+                <button class="btn" style="background: #e2e8f0; color: #1a202c;" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        const WS_URL = `ws://${window.location.host}/ws`;
+        const AUTH_TOKEN = 'dev-token'; // TODO: Implement proper auth
+
+        let ws = null;
+        let currentContentId = null;
+        let approvalQueue = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            connectWebSocket();
+            loadStats();
+            loadQueue();
+        });
+
+        // WebSocket Connection
+        function connectWebSocket() {
+            ws = new WebSocket(WS_URL);
+
+            ws.onopen = () => {
+                updateConnectionStatus(true);
+                console.log('[WS] Connected');
+            };
+
+            ws.onclose = () => {
+                updateConnectionStatus(false);
+                console.log('[WS] Disconnected, reconnecting in 5s...');
+                setTimeout(connectWebSocket, 5000);
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                handleWebSocketMessage(data);
+            };
+
+            ws.onerror = (error) => {
+                console.error('[WS] Error:', error);
+            };
+
+            // Heartbeat
+            setInterval(() => {
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send('ping');
+                }
+            }, 30000);
+        }
+
+        function handleWebSocketMessage(data) {
+            console.log('[WS] Message:', data);
+
+            if (data.type === 'content_approved' || data.type === 'content_rejected' || data.type === 'content_edited') {
+                // Refresh queue and stats
+                loadQueue();
+                loadStats();
+            }
+        }
+
+        function updateConnectionStatus(connected) {
+            const dot = document.getElementById('connection-dot');
+            const status = document.getElementById('connection-status');
+
+            if (connected) {
+                dot.classList.add('connected');
+                status.textContent = 'Connected';
+            } else {
+                dot.classList.remove('connected');
+                status.textContent = 'Disconnected';
+            }
+        }
+
+        // Load Stats
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/api/stats`, {
+                    headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+                });
+                const stats = await response.json();
+
+                document.getElementById('stat-pending').textContent = stats.pending;
+                document.getElementById('stat-approved').textContent = stats.approved_this_week;
+                document.getElementById('stat-qa').textContent = stats.avg_qa_score.toFixed(2);
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Load Approval Queue
+        async function loadQueue() {
+            const container = document.getElementById('queue-container');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/approval-queue`, {
+                    headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+                });
+                approvalQueue = await response.json();
+
+                if (approvalQueue.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3>All caught up!</h3>
+                            <p>No content pending approval</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = approvalQueue.map(renderContentItem).join('');
+                }
+            } catch (error) {
+                console.error('Error loading queue:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Error loading queue</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Render Content Item
+        function renderContentItem(item) {
+            const qaScoreClass = (score) => {
+                if (score >= 0.85) return 'excellent';
+                if (score >= 0.70) return 'good';
+                return 'warning';
+            };
+
+            const context = item.original_insight || item.related_article_title
+                ? `<div class="content-context">
+                    ${item.original_insight ? `<strong>Insight:</strong> ${item.original_insight.substring(0, 150)}...` : ''}
+                    ${item.related_article_title ? `<br><strong>Article:</strong> ${item.related_article_title}` : ''}
+                   </div>`
+                : '';
+
+            return `
+                <div class="content-item">
+                    <div class="content-header">
+                        <div class="content-meta">
+                            <span class="badge platform">${item.platform.toUpperCase()}</span>
+                            <span class="badge urgency-${item.urgency}">${item.urgency.replace('_', ' ')}</span>
+                            ${item.pillar_alignment.map(p => `<span class="badge" style="background: #8b5cf6; color: white;">${p}</span>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="qa-scores">
+                        <div class="qa-score">
+                            <div class="qa-score-label">Overall</div>
+                            <div class="qa-score-value ${qaScoreClass(item.overall_qa_score)}">${(item.overall_qa_score * 100).toFixed(0)}%</div>
+                        </div>
+                        <div class="qa-score">
+                            <div class="qa-score-label">Voice</div>
+                            <div class="qa-score-value ${qaScoreClass(item.voice_authenticity_score)}">${(item.voice_authenticity_score * 100).toFixed(0)}%</div>
+                        </div>
+                        <div class="qa-score">
+                            <div class="qa-score-label">Brand</div>
+                            <div class="qa-score-value ${qaScoreClass(item.brand_alignment_score)}">${(item.brand_alignment_score * 100).toFixed(0)}%</div>
+                        </div>
+                        <div class="qa-score">
+                            <div class="qa-score-label">Engagement</div>
+                            <div class="qa-score-value ${qaScoreClass(item.engagement_prediction_score)}">${(item.engagement_prediction_score * 100).toFixed(0)}%</div>
+                        </div>
+                    </div>
+
+                    ${context}
+
+                    <div class="content-preview">${item.content}</div>
+
+                    <div class="content-actions">
+                        <button class="btn btn-approve" onclick="approveContent(${item.content_id})">
+                            ✓ Approve
+                        </button>
+                        <button class="btn btn-edit" onclick="editContent(${item.content_id}, \`${item.content.replace(/`/g, '\\`')}\`)">
+                            ✏ Edit
+                        </button>
+                        <button class="btn btn-reject" onclick="rejectContent(${item.content_id})">
+                            ✗ Reject
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Actions
+        async function approveContent(contentId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/approve/${contentId}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+                });
+
+                if (response.ok) {
+                    showToast('Content approved!', 'success');
+                    loadQueue();
+                    loadStats();
+                } else {
+                    throw new Error('Failed to approve');
+                }
+            } catch (error) {
+                showToast('Error approving content', 'error');
+            }
+        }
+
+        function rejectContent(contentId) {
+            currentContentId = contentId;
+            document.getElementById('reject-modal').classList.add('active');
+            document.getElementById('reject-reason').value = '';
+            document.getElementById('reject-reason').focus();
+        }
+
+        async function confirmReject() {
+            const reason = document.getElementById('reject-reason').value.trim();
+
+            if (!reason) {
+                alert('Please provide a rejection reason');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/reject/${currentContentId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${AUTH_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        content_id: currentContentId,
+                        action: 'reject',
+                        rejection_reason: reason
+                    })
+                });
+
+                if (response.ok) {
+                    showToast('Content rejected', 'success');
+                    closeModal();
+                    loadQueue();
+                    loadStats();
+                } else {
+                    throw new Error('Failed to reject');
+                }
+            } catch (error) {
+                showToast('Error rejecting content', 'error');
+            }
+        }
+
+        function editContent(contentId, content) {
+            currentContentId = contentId;
+            document.getElementById('edit-modal').classList.add('active');
+            document.getElementById('edit-content').value = content;
+            document.getElementById('edit-content').focus();
+        }
+
+        async function confirmEdit() {
+            const editedContent = document.getElementById('edit-content').value.trim();
+
+            if (!editedContent) {
+                alert('Content cannot be empty');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/edit/${currentContentId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${AUTH_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        content_id: currentContentId,
+                        action: 'edit',
+                        edited_content: editedContent
+                    })
+                });
+
+                if (response.ok) {
+                    showToast('Content edited and approved!', 'success');
+                    closeModal();
+                    loadQueue();
+                    loadStats();
+                } else {
+                    throw new Error('Failed to edit');
+                }
+            } catch (error) {
+                showToast('Error editing content', 'error');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('reject-modal').classList.remove('active');
+            document.getElementById('edit-modal').classList.remove('active');
+            currentContentId = null;
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close modal on click outside
+        window.onclick = (event) => {
+            if (event.target.classList.contains('modal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>

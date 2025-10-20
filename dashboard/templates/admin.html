@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milton AI - Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card h2 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .feature-card .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #764ba2;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-ready {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-api-only {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Milton AI Publicist - Admin Dashboard</h1>
+            <p>Complete access to all features and API endpoints</p>
+        </div>
+
+        <div class="features-grid">
+            <!-- Content Generation -->
+            <div class="feature-card">
+                <h2>📝 Content Generation</h2>
+                <span class="status-badge status-ready">✓ UI Ready</span>
+                <p>Generate posts in Milton's authentic voice with AI graphics or upload your own photos.</p>
+                <div class="buttons">
+                    <a href="/" class="btn btn-primary">Open Dashboard</a>
+                </div>
+            </div>
+
+            <!-- Analytics -->
+            <div class="feature-card">
+                <h2>📊 Analytics Dashboard</h2>
+                <span class="status-badge status-api-only">API Only</span>
+                <p>Performance metrics, best times to post, content analysis, and AI insights.</p>
+                <div class="buttons">
+                    <button onclick="loadAnalyticsDashboard()" class="btn btn-info">View Analytics</button>
+                    <button onclick="loadBestTimes()" class="btn btn-secondary">Best Times</button>
+                </div>
+            </div>
+
+            <!-- Scheduling -->
+            <div class="feature-card">
+                <h2>📅 Scheduling & Calendar</h2>
+                <span class="status-badge status-ready">✓ UI Ready</span>
+                <p>Schedule posts for auto-publishing, view calendar, manage scheduled content.</p>
+                <div class="buttons">
+                    <button onclick="showScheduler()" class="btn btn-success">📅 Schedule New Post</button>
+                    <button onclick="loadScheduled()" class="btn btn-primary">View Schedule</button>
+                    <button onclick="loadUpcoming()" class="btn btn-secondary">Upcoming Posts</button>
+                </div>
+            </div>
+
+            <!-- News Monitor -->
+            <div class="feature-card">
+                <h2>📰 News Monitor</h2>
+                <span class="status-badge status-api-only">API Only</span>
+                <p>Auto-monitor KSU Athletics news, get AI-generated post suggestions with priority ranking.</p>
+                <div class="buttons">
+                    <button onclick="runNewsMonitor()" class="btn btn-success">Find News</button>
+                </div>
+            </div>
+
+            <!-- PR Opportunities -->
+            <div class="feature-card">
+                <h2>🎯 PR Opportunities</h2>
+                <span class="status-badge status-api-only">API Only</span>
+                <p>Trending topics, hashtag recommendations, competitive analysis, content ideas.</p>
+                <div class="buttons">
+                    <button onclick="runPRFinder()" class="btn btn-success">Find Opportunities</button>
+                </div>
+            </div>
+
+            <!-- Media Gallery -->
+            <div class="feature-card">
+                <h2>🖼️ Media Gallery</h2>
+                <span class="status-badge status-api-only">API Only</span>
+                <p>View all uploaded and AI-generated graphics, manage media library.</p>
+                <div class="buttons">
+                    <button onclick="loadMediaGallery()" class="btn btn-info">View Gallery</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Reference -->
+        <div class="feature-card" style="grid-column: 1/-1;">
+            <h2>🔌 Direct API Access</h2>
+            <p style="margin-bottom: 20px;">All 28 API endpoints are available. Use these URLs directly:</p>
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px;">
+                <strong>Analytics:</strong><br>
+                • GET /api/analytics/dashboard - Complete summary<br>
+                • GET /api/analytics/best-times - Optimal posting schedule<br>
+                • GET /api/analytics/insights - AI recommendations<br>
+                <br>
+                <strong>Scheduling:</strong><br>
+                • GET /api/scheduled - View all scheduled posts<br>
+                • GET /api/scheduled/upcoming - Next 7 days<br>
+                • POST /api/posts/{id}/schedule - Schedule a post<br>
+                <br>
+                <strong>Media:</strong><br>
+                • GET /api/media/gallery - All media files<br>
+                • POST /api/media/upload - Upload new media<br>
+            </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div id="resultsPanel" style="display: none; margin-top: 30px;">
+            <div class="feature-card">
+                <h2 id="resultsTitle">Results</h2>
+                <div id="resultsContent" style="background: #f5f5f5; padding: 20px; border-radius: 8px; max-height: 500px; overflow-y: auto;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadAnalyticsDashboard() {
+            showResults('Analytics Dashboard', 'Loading...');
+            try {
+                const response = await fetch('/api/analytics/dashboard');
+                const data = await response.json();
+                displayJSON('Analytics Dashboard', data);
+            } catch (error) {
+                showResults('Error', error.message);
+            }
+        }
+
+        async function loadBestTimes() {
+            showResults('Best Times to Post', 'Loading...');
+            try {
+                const response = await fetch('/api/analytics/best-times');
+                const data = await response.json();
+                displayJSON('Best Times to Post', data);
+            } catch (error) {
+                showResults('Error', error.message);
+            }
+        }
+
+        async function loadScheduled() {
+            showResults('Scheduled Posts', 'Loading...');
+            try {
+                const response = await fetch('/api/scheduled');
+                const data = await response.json();
+                displayJSON('Scheduled Posts', data);
+            } catch (error) {
+                showResults('Error', error.message);
+            }
+        }
+
+        async function loadUpcoming() {
+            showResults('Upcoming Posts (7 Days)', 'Loading...');
+            try {
+                const response = await fetch('/api/scheduled/upcoming');
+                const data = await response.json();
+                displayJSON('Upcoming Posts', data);
+            } catch (error) {
+                showResults('Error', error.message);
+            }
+        }
+
+        async function showScheduler() {
+            showResults('Schedule New Post', 'Loading posts...');
+
+            try {
+                // Fetch all posts
+                const response = await fetch('/api/posts');
+                const data = await response.json();
+                const posts = data.posts || [];
+
+                if (posts.length === 0) {
+                    showResults('Schedule New Post', 'No posts available to schedule. Create a post first.');
+                    return;
+                }
+
+                // Create scheduler UI
+                const schedulerHTML = `
+                    <div style="background: white; padding: 30px; border-radius: 15px; max-width: 800px; margin: 0 auto;">
+                        <h2 style="color: #667eea; margin-bottom: 20px;">📅 Schedule a Post</h2>
+
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; font-weight: bold; margin-bottom: 10px; color: #333;">
+                                Select Post to Schedule:
+                            </label>
+                            <select id="schedulePostId" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;" onchange="updatePostPreview()">
+                                <option value="">-- Select a post --</option>
+                                ${posts.map(post => `
+                                    <option value="${post.id}" data-content="${post.content.substring(0, 100).replace(/"/g, '&quot;')}" data-voice="${post.voice_type}" data-scenario="${post.scenario}">
+                                        Post #${post.id} - ${post.voice_type} - ${post.scenario}
+                                    </option>
+                                `).join('')}
+                            </select>
+                        </div>
+
+                        <div id="postPreview" style="display: none; background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #667eea;">
+                            <div style="font-size: 12px; color: #666; margin-bottom: 5px;">
+                                <strong id="previewVoice"></strong> • <span id="previewScenario"></span>
+                            </div>
+                            <div id="previewContent" style="color: #333; font-size: 14px; line-height: 1.5;"></div>
+                        </div>
+
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; font-weight: bold; margin-bottom: 10px; color: #333;">
+                                Platform:
+                            </label>
+                            <select id="schedulePlatform" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="twitter">Twitter</option>
+                                <option value="instagram">Instagram</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; font-weight: bold; margin-bottom: 10px; color: #333;">
+                                Schedule Date & Time:
+                            </label>
+                            <input type="datetime-local" id="scheduleDateTime" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;" />
+                            <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                                Current time: ${new Date().toLocaleString()}
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 15px; margin-top: 30px;">
+                            <button onclick="submitSchedule()" style="flex: 1; padding: 15px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">
+                                ✓ Schedule Post
+                            </button>
+                            <button onclick="loadScheduled()" style="flex: 1; padding: 15px; background: #6c757d; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('results').innerHTML = schedulerHTML;
+
+                // Set default datetime to 1 hour from now
+                const now = new Date();
+                now.setHours(now.getHours() + 1);
+                now.setMinutes(0);
+                document.getElementById('scheduleDateTime').value = now.toISOString().slice(0, 16);
+
+            } catch (error) {
+                showResults('Error', error.message);
+            }
+        }
+
+        function updatePostPreview() {
+            const select = document.getElementById('schedulePostId');
+            const selectedOption = select.options[select.selectedIndex];
+            const preview = document.getElementById('postPreview');
+
+            if (select.value) {
+                const content = selectedOption.getAttribute('data-content');
+                const voice = selectedOption.getAttribute('data-voice');
+                const scenario = selectedOption.getAttribute('data-scenario');
+
+                document.getElementById('previewVoice').textContent = voice.toUpperCase();
+                document.getElementById('previewScenario').textContent = scenario.replace(/_/g, ' ');
+                document.getElementById('previewContent').textContent = content + '...';
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        async function submitSchedule() {
+            const postId = document.getElementById('schedulePostId').value;
+            const platform = document.getElementById('schedulePlatform').value;
+            const dateTime = document.getElementById('scheduleDateTime').value;
+
+            if (!postId) {
+                alert('Please select a post to schedule');
+                return;
+            }
+
+            if (!dateTime) {
+                alert('Please select a date and time');
+                return;
+            }
+
+            try {
+                // Convert to ISO format
+                const scheduledTime = new Date(dateTime).toISOString();
+
+                const response = await fetch(`/api/posts/${postId}/schedule`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        platform: platform,
+                        scheduled_time: scheduledTime
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showResults('Success!', `Post scheduled successfully for ${new Date(scheduledTime).toLocaleString()} on ${platform}. The scheduler daemon will automatically publish it at the scheduled time.`);
+                } else {
+                    showResults('Error', result.error || 'Failed to schedule post');
+                }
+            } catch (error) {
+                showResults('Error', error.message);
+            }
+        }
+
+        async function loadMediaGallery() {
+            showResults('Media Gallery', 'Loading...');
+            try {
+                const response = await fetch('/api/media/gallery');
+                const data = await response.json();
+
+                const media = data.media || [];
+                let html = `<p><strong>Total Media Files: ${data.total}</strong></p><div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 20px;">`;
+
+                media.forEach(item => {
+                    html += `
+                        <div style="background: white; padding: 10px; border-radius: 8px;">
+                            <img src="${item.url}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 5px; margin-bottom: 10px;">
+                            <p style="font-size: 12px; margin-bottom: 5px; word-break: break-word;">${item.filename}</p>
+                            <p style="font-size: 11px; color: #666;">${(item.size / 1024).toFixed(1)} KB</p>
+                            <span style="background: ${item.type === 'uploaded' ? '#667eea' : '#764ba2'}; color: white; font-size: 10px; padding: 3px 8px; border-radius: 3px;">${item.type}</span>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+                showResults('Media Gallery', html);
+            } catch (error) {
+                showResults('Error', error.message);
+            }
+        }
+
+        function runNewsMonitor() {
+            showResults('News Monitor', '<p>News monitoring runs via Python module.</p><p><strong>To run:</strong></p><pre style="background: #333; color: #0f0; padding: 15px; border-radius: 5px;">cd milton-publicist\npython module_iv/news_monitor.py</pre><p>This will find KSU Athletics news and generate post suggestions.</p>');
+        }
+
+        function runPRFinder() {
+            showResults('PR Opportunity Finder', '<p>PR finder runs via Python module.</p><p><strong>To run:</strong></p><pre style="background: #333; color: #0f0; padding: 15px; border-radius: 5px;">cd milton-publicist\npython module_iv/pr_opportunity_finder.py</pre><p>This will analyze trending topics and suggest content opportunities.</p>');
+        }
+
+        function showResults(title, content) {
+            document.getElementById('resultsTitle').textContent = title;
+            document.getElementById('resultsContent').innerHTML = content;
+            document.getElementById('resultsPanel').style.display = 'block';
+            document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function displayJSON(title, data) {
+            const formatted = JSON.stringify(data, null, 2);
+            const html = `<pre style="background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto;">${escapeHtml(formatted)}</pre>`;
+            showResults(title, html);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

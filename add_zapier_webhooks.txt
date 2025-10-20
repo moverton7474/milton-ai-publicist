@@ -1,0 +1,16 @@
+# ============================================================================
+# ZAPIER WEBHOOKS (for Social Media Publishing)
+# ============================================================================
+
+# LinkedIn Webhook (from Zapier "Webhooks by Zapier" → "Catch Hook")
+# Paste your webhook URL from Zapier below:
+ZAPIER_LINKEDIN_WEBHOOK=PASTE_YOUR_LINKEDIN_WEBHOOK_URL_HERE
+
+# Instagram Webhook (optional - create a separate Zap for Instagram)
+# ZAPIER_INSTAGRAM_WEBHOOK=PASTE_YOUR_INSTAGRAM_WEBHOOK_URL_HERE
+
+# Twitter Webhook (optional - create a separate Zap for Twitter)
+# ZAPIER_TWITTER_WEBHOOK=PASTE_YOUR_TWITTER_WEBHOOK_URL_HERE
+
+# Facebook Webhook (optional - create a separate Zap for Facebook)
+# ZAPIER_FACEBOOK_WEBHOOK=PASTE_YOUR_FACEBOOK_WEBHOOK_URL_HERE

@@ -1,0 +1,594 @@
+/**
+ * Zapier Publisher Styles
+ * CSS for publishing UI components, buttons, modals, and toast notifications
+ */
+
+/* ==================== Toast Notifications ==================== */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 300px;
+    max-width: 500px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.toast-fade-out {
+    animation: slideOut 0.3s ease-out forwards;
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    gap: 12px;
+}
+
+.toast-icon {
+    font-size: 24px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.toast-message {
+    flex-grow: 1;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.toast-close:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+/* Toast Types */
+.toast-success {
+    border-left: 4px solid #28a745;
+}
+
+.toast-success .toast-icon {
+    color: #28a745;
+}
+
+.toast-error {
+    border-left: 4px solid #dc3545;
+}
+
+.toast-error .toast-icon {
+    color: #dc3545;
+}
+
+.toast-warning {
+    border-left: 4px solid #ffc107;
+}
+
+.toast-warning .toast-icon {
+    color: #ffc107;
+}
+
+.toast-info {
+    border-left: 4px solid #17a2b8;
+}
+
+.toast-info .toast-icon {
+    color: #17a2b8;
+}
+
+/* ==================== Publish Buttons ==================== */
+.btn-publish {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-publish:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-publish:active {
+    transform: translateY(0);
+}
+
+.btn-publish:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Platform-specific button colors */
+.btn-publish-linkedin {
+    background: linear-gradient(135deg, #0077b5 0%, #00a0dc 100%);
+}
+
+.btn-publish-linkedin:hover {
+    box-shadow: 0 4px 12px rgba(0, 119, 181, 0.4);
+}
+
+.btn-publish-instagram {
+    background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.btn-publish-instagram:hover {
+    box-shadow: 0 4px 12px rgba(188, 24, 136, 0.4);
+}
+
+.btn-publish-twitter {
+    background: linear-gradient(135deg, #1da1f2 0%, #0c85d0 100%);
+}
+
+.btn-publish-twitter:hover {
+    box-shadow: 0 4px 12px rgba(29, 161, 242, 0.4);
+}
+
+.btn-publish-facebook {
+    background: linear-gradient(135deg, #1877f2 0%, #0c63d4 100%);
+}
+
+.btn-publish-facebook:hover {
+    box-shadow: 0 4px 12px rgba(24, 119, 242, 0.4);
+}
+
+/* Button States */
+.btn-loading {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.btn-published {
+    background: #28a745 !important;
+    cursor: default;
+}
+
+.btn-published:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-error {
+    background: #dc3545 !important;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* ==================== Modal Dialogs ==================== */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.modal-close:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.modal-body {
+    padding: 24px;
+    overflow-y: auto;
+}
+
+/* ==================== Platform Selector ==================== */
+.platform-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.platform-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.platform-option:hover:not(.platform-disabled) {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.platform-option.platform-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f5f5f5;
+}
+
+.platform-option input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.platform-name {
+    flex-grow: 1;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.platform-status {
+    font-size: 14px;
+    padding: 4px 12px;
+    border-radius: 12px;
+}
+
+.platform-ready {
+    background: #d4edda;
+    color: #155724;
+}
+
+.platform-not-configured {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.btn-setup-link {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-setup-link:hover {
+    background: #5568d3;
+}
+
+/* ==================== Setup Instructions ==================== */
+.setup-steps {
+    margin: 20px 0;
+    padding-left: 24px;
+}
+
+.setup-steps li {
+    margin: 12px 0;
+    line-height: 1.6;
+}
+
+.setup-info {
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.setup-info p {
+    margin: 8px 0;
+}
+
+.setup-info code {
+    background: #e9ecef;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+}
+
+.setup-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.publish-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+/* ==================== Publishing History Table ==================== */
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.history-table thead {
+    background: #f8f9fa;
+}
+
+.history-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.history-table td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.history-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.success-row {
+    background: #d4edda20;
+}
+
+.error-row {
+    background: #f8d7da20;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.btn-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+.btn-retry {
+    background: #ffc107;
+    color: #000;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-retry:hover {
+    background: #e0a800;
+}
+
+/* ==================== Post Preview ==================== */
+.post-preview {
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+    border-left: 4px solid #667eea;
+}
+
+.post-preview p {
+    margin: 0;
+    color: #495057;
+    line-height: 1.6;
+}
+
+/* ==================== Utility Classes ==================== */
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+    font-style: italic;
+}
+
+/* ==================== Button Variants ==================== */
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5568d3;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+/* ==================== Responsive Design ==================== */
+@media (max-width: 768px) {
+    .toast {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+
+    .platform-selector {
+        gap: 8px;
+    }
+
+    .platform-option {
+        padding: 12px;
+    }
+
+    .setup-actions,
+    .publish-actions {
+        flex-direction: column;
+    }
+
+    .setup-actions button,
+    .setup-actions a,
+    .publish-actions button {
+        width: 100%;
+    }
+
+    .history-table {
+        font-size: 12px;
+    }
+
+    .history-table th,
+    .history-table td {
+        padding: 8px 4px;
+    }
+}
+
+/* ==================== Loading States ==================== */
+.btn-loading::after {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

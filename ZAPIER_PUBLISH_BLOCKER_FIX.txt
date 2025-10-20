@@ -1,0 +1,100 @@
+================================================================================
+ZAPIER PUBLISH BLOCKER - THE FIX
+================================================================================
+
+PROBLEM IDENTIFIED:
+-------------------
+Your "Data out" tab shows:
+  Url: https://www.linkedin.com/feed/update/urn:li:share:7480282464972869665/
+
+This LinkedIn URL shouldn't be there! It's from a previous test and is now
+blocking publication.
+
+
+THE FIX (3 SIMPLE STEPS):
+--------------------------
+
+STEP 1: Click "Configure" tab
+        (at the top of your LinkedIn action)
+
+STEP 2: Find "Content - URL" field
+        - This field likely has that LinkedIn URL in it
+        - Click the X button on the right side of the field
+        - OR press Ctrl+A then Delete
+        - Field should be completely EMPTY
+
+STEP 3: Verify ALL optional fields are EMPTY
+        - Content - Title: EMPTY
+        - Content - Description: EMPTY
+        - Content - Image URL: EMPTY
+        - Content - URL: EMPTY
+
+
+YOUR CORRECT CONFIGURATION:
+---------------------------
+
+LinkedIn - Create Share Update
+
+Account: [Your LinkedIn Profile Name]
+Comment: 1__content                    <-- ONLY required field with data
+Content - Title: [EMPTY]               <-- Must be empty
+Content - Description: [EMPTY]         <-- Must be empty
+Content - Image URL: [EMPTY]           <-- Must be empty
+Content - URL: [EMPTY]                 <-- THIS ONE likely has the LinkedIn URL!
+Visible To: anyone
+
+
+AFTER YOU CLEAR THOSE FIELDS:
+------------------------------
+1. Click "Continue" button at bottom
+2. Click "Skip test" (don't test again)
+3. Click "Publish" button (top-right)
+4. Turn Zap ON
+
+
+ALTERNATIVE: START FRESH
+-------------------------
+If clearing fields doesn't work:
+
+1. Delete Step 2 (LinkedIn action) - click trash icon
+2. Click "Add step"
+3. Choose "LinkedIn" -> "Create Share Update"
+4. Connect account
+5. Fill ONLY Comment field with: 1__content
+6. Fill Visible To with: anyone
+7. Leave ALL other fields blank
+8. Skip test
+9. Publish
+
+
+WHY THIS KEEPS HAPPENING:
+--------------------------
+Zapier's test feature saves output from previous tests (like the LinkedIn
+post URL) and tries to reuse it. When you configure optional fields, Zapier
+auto-fills them with this old test data, causing conflicts.
+
+SOLUTION: Don't fill optional fields unless you're actually sending that data
+from your backend.
+
+
+WHAT YOUR BACKEND SENDS:
+-------------------------
+{
+  "content": "Post text here",
+  "platform": "linkedin",
+  "post_id": 123,
+  "timestamp": "2025-10-20T09:00:00Z"
+}
+
+Only "content" is mapped (to 1__content in Comment field).
+Everything else (title, description, images, URLs) is NOT sent.
+Therefore, those fields should be EMPTY in Zapier.
+
+
+BOTTOM LINE:
+------------
+The "Content - URL" field has a LinkedIn URL in it from a previous test.
+Clear it. Leave it empty. Then publish.
+
+
+================================================================================

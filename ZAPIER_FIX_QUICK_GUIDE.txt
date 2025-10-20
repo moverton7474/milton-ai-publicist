@@ -1,0 +1,82 @@
+================================================================================
+QUICK FIX FOR YOUR ZAPIER LINKEDIN ISSUE
+================================================================================
+
+THE PROBLEM:
+-----------
+Your optional fields have webhook URLs in them. This is WRONG.
+
+FIELDS WITH ERRORS:
+  Content - Description: https://hooks.zapier.com/hooks/catch/25056295/u-r1ik42/
+  Content - Image URL: https://hooks.zapier.com/hooks/catch/25056295/u-r1ik42/
+  Content - URL: https://hooks.zapier.com/hooks/catch/25056295/u-r1ik42/
+
+THE FIX (3 STEPS):
+------------------
+
+STEP 1: Click "Configure" tab (at the top of LinkedIn action)
+
+STEP 2: Find these 3 fields and DELETE the webhook URLs:
+
+  Field: Content - Description
+  Action: Click in field, press Ctrl+A, press Delete
+  Result: Field should be EMPTY
+
+  Field: Content - Image URL
+  Action: Click in field, press Ctrl+A, press Delete
+  Result: Field should be EMPTY
+
+  Field: Content - URL
+  Action: Click in field, press Ctrl+A, press Delete
+  Result: Field should be EMPTY
+
+STEP 3: Click "Continue" button at bottom
+
+THEN: Click "Publish" in top-right corner
+
+
+YOUR CORRECT CONFIGURATION SHOULD BE:
+-------------------------------------
+
+LinkedIn Action - "Create Share Update"
+
+  Account: [Your LinkedIn Name]
+
+  Comment: 1__content  <-- THIS IS THE ONLY REQUIRED FIELD
+
+  Content - Title: [EMPTY] <-- Leave blank
+  Content - Description: [EMPTY] <-- Leave blank
+  Content - Image URL: [EMPTY] <-- Leave blank
+  Content - URL: [EMPTY] <-- Leave blank
+
+  Visible To: Anyone
+
+
+WHY THIS HAPPENED:
+------------------
+When you clicked those optional fields, Zapier auto-suggested the webhook URL
+from Step 1. But those fields should either be EMPTY or map to webhook DATA
+(like 1__title, 1__description), NOT the webhook URL itself.
+
+The webhook URL only belongs in Step 1 (Catch Hook).
+
+
+AFTER YOU FIX IT:
+-----------------
+1. Delete the webhook URLs from those 3 fields
+2. Leave them blank
+3. Click Continue
+4. Click Publish
+5. Turn Zap ON
+6. Test from your dashboard
+
+
+TEST COMMAND:
+-------------
+cd "c:\Users\mover\OneDrive\Documents\GitHub\All State RevShield Engine AJ\milton-publicist"
+python test_publish_to_linkedin.py
+
+
+================================================================================
+BOTTOM LINE: Delete those webhook URLs from the optional fields!
+================================================================================

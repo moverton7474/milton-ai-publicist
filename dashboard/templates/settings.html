@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Milton AI Publicist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 32px;
+        }
+
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .card h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .platform-grid {
+            display: grid;
+            gap: 25px;
+        }
+
+        .platform-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .platform-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        }
+
+        .platform-card.connected {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .platform-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .platform-icon {
+            font-size: 48px;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        .linkedin-icon {
+            background: #0077b5;
+            color: white;
+        }
+
+        .twitter-icon {
+            background: #1da1f2;
+            color: white;
+        }
+
+        .instagram-icon {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+        }
+
+        .platform-details h3 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .platform-details p {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .status-connected {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-disconnected {
+            background: #6c757d;
+            color: white;
+        }
+
+        .platform-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-connect {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-connect:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-disconnect {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-disconnect:hover {
+            background: #c82333;
+        }
+
+        .btn-test {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-test:hover {
+            background: #218838;
+        }
+
+        .btn-disabled {
+            background: #e0e0e0;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .info-box p {
+            color: #856404;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .info-box ul {
+            margin: 15px 0 0 20px;
+            color: #856404;
+        }
+
+        .info-box li {
+            margin-bottom: 8px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 18px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 10px;
+            padding: 20px;
+            color: #721c24;
+            margin-bottom: 20px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            color: #155724;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Settings</h1>
+            <div>
+                <a href="/" class="back-link">← Back to Dashboard</a>
+                <a href="/admin" class="back-link" style="margin-left: 20px;">Admin Panel</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Social Media Connections</h2>
+            <p>Connect your social media accounts to enable automatic publishing. Click the connect button below to authorize Milton AI Publicist to post on your behalf.</p>
+
+            <div class="info-box">
+                <h3>🔒 How OAuth Works</h3>
+                <p>When you click "Connect", you'll be redirected to the social media platform to authorize access. We use Clerk for secure OAuth authentication:</p>
+                <ul>
+                    <li><strong>LinkedIn:</strong> Allows posting updates and articles to your profile or company page</li>
+                    <li><strong>Twitter:</strong> Enables posting tweets and uploading media</li>
+                    <li><strong>Instagram:</strong> Permits posting photos and stories (Business accounts only)</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Security:</strong> Your credentials are never stored. We only receive an access token that can be revoked at any time.</p>
+            </div>
+
+            <div id="loadingMessage" class="loading">
+                Loading connection status...
+            </div>
+
+            <div id="platforms" class="platform-grid" style="display: none;">
+                <!-- LinkedIn -->
+                <div class="platform-card" id="linkedin-card">
+                    <div class="platform-info">
+                        <div class="platform-icon linkedin-icon">
+                            in
+                        </div>
+                        <div class="platform-details">
+                            <h3>LinkedIn</h3>
+                            <p>Post professional updates and announcements</p>
+                            <span class="status-badge status-disconnected" id="linkedin-status">Not Connected</span>
+                        </div>
+                    </div>
+                    <div class="platform-actions">
+                        <button class="btn btn-connect" id="linkedin-connect" onclick="connectPlatform('linkedin')">
+                            🔗 Connect LinkedIn
+                        </button>
+                        <button class="btn btn-disconnect" id="linkedin-disconnect" onclick="disconnectPlatform('linkedin')" style="display: none;">
+                            ✗ Disconnect
+                        </button>
+                        <button class="btn btn-test" id="linkedin-test" onclick="testConnection('linkedin')" style="display: none;">
+                            🧪 Test
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Twitter -->
+                <div class="platform-card" id="twitter-card">
+                    <div class="platform-info">
+                        <div class="platform-icon twitter-icon">
+                            𝕏
+                        </div>
+                        <div class="platform-details">
+                            <h3>Twitter / X</h3>
+                            <p>Share quick updates and engage with followers</p>
+                            <span class="status-badge status-disconnected" id="twitter-status">Not Connected</span>
+                        </div>
+                    </div>
+                    <div class="platform-actions">
+                        <button class="btn btn-connect" id="twitter-connect" onclick="connectPlatform('twitter')">
+                            🔗 Connect Twitter
+                        </button>
+                        <button class="btn btn-disconnect" id="twitter-disconnect" onclick="disconnectPlatform('twitter')" style="display: none;">
+                            ✗ Disconnect
+                        </button>
+                        <button class="btn btn-test" id="twitter-test" onclick="testConnection('twitter')" style="display: none;">
+                            🧪 Test
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Instagram -->
+                <div class="platform-card" id="instagram-card">
+                    <div class="platform-info">
+                        <div class="platform-icon instagram-icon">
+                            📷
+                        </div>
+                        <div class="platform-details">
+                            <h3>Instagram</h3>
+                            <p>Post photos and visual content (Business account required)</p>
+                            <span class="status-badge status-disconnected" id="instagram-status">Not Connected</span>
+                        </div>
+                    </div>
+                    <div class="platform-actions">
+                        <button class="btn btn-connect" id="instagram-connect" onclick="connectPlatform('instagram')">
+                            🔗 Connect Instagram
+                        </button>
+                        <button class="btn btn-disconnect" id="instagram-disconnect" onclick="disconnectPlatform('instagram')" style="display: none;">
+                            ✗ Disconnect
+                        </button>
+                        <button class="btn btn-test" id="instagram-test" onclick="testConnection('instagram')" style="display: none;">
+                            🧪 Test
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load connection status on page load
+        window.onload = async function() {
+            await loadConnectionStatus();
+        };
+
+        async function loadConnectionStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+
+                // Hide loading message
+                document.getElementById('loadingMessage').style.display = 'none';
+                document.getElementById('platforms').style.display = 'grid';
+
+                // Update LinkedIn status
+                updatePlatformUI('linkedin', data.connections.linkedin);
+                updatePlatformUI('twitter', data.connections.twitter);
+                updatePlatformUI('instagram', data.connections.instagram);
+
+            } catch (error) {
+                document.getElementById('loadingMessage').innerHTML =
+                    '<div class="error-message">Failed to load connection status: ' + error.message + '</div>';
+            }
+        }
+
+        function updatePlatformUI(platform, isConnected) {
+            const card = document.getElementById(`${platform}-card`);
+            const status = document.getElementById(`${platform}-status`);
+            const connectBtn = document.getElementById(`${platform}-connect`);
+            const disconnectBtn = document.getElementById(`${platform}-disconnect`);
+            const testBtn = document.getElementById(`${platform}-test`);
+
+            if (isConnected) {
+                card.classList.add('connected');
+                status.textContent = '✓ Connected';
+                status.className = 'status-badge status-connected';
+                connectBtn.style.display = 'none';
+                disconnectBtn.style.display = 'inline-block';
+                testBtn.style.display = 'inline-block';
+            } else {
+                card.classList.remove('connected');
+                status.textContent = 'Not Connected';
+                status.className = 'status-badge status-disconnected';
+                connectBtn.style.display = 'inline-block';
+                disconnectBtn.style.display = 'none';
+                testBtn.style.display = 'none';
+            }
+        }
+
+        async function connectPlatform(platform) {
+            // Show loading state
+            const btn = document.getElementById(`${platform}-connect`);
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ Connecting...';
+            btn.disabled = true;
+            btn.classList.add('btn-disabled');
+
+            try {
+                // Call backend OAuth endpoint
+                const response = await fetch(`/api/auth/${platform}/connect`, {
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+
+                if (data.auth_url) {
+                    // Redirect to OAuth provider
+                    window.location.href = data.auth_url;
+                } else if (data.error) {
+                    alert('Error: ' + data.error);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    btn.classList.remove('btn-disabled');
+                }
+            } catch (error) {
+                alert('Failed to initiate OAuth: ' + error.message);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.classList.remove('btn-disabled');
+            }
+        }
+
+        async function disconnectPlatform(platform) {
+            if (!confirm(`Are you sure you want to disconnect ${platform}? You will need to reconnect to publish posts.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/auth/${platform}/disconnect`, {
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(`${platform} disconnected successfully`);
+                    updatePlatformUI(platform, false);
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to disconnect'));
+                }
+            } catch (error) {
+                alert('Failed to disconnect: ' + error.message);
+            }
+        }
+
+        async function testConnection(platform) {
+            const btn = document.getElementById(`${platform}-test`);
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ Testing...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`/api/auth/${platform}/test`);
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(`✓ ${platform} connection is working!\n\nAccount: ${data.account_name || 'N/A'}`);
+                } else {
+                    alert(`✗ Connection test failed: ${data.error || 'Unknown error'}`);
+                }
+            } catch (error) {
+                alert('Test failed: ' + error.message);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
