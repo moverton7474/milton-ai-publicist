@@ -1,14 +1,8 @@
 """
-Module VI: Media Generation
-AI-generated graphics, avatar videos, and branded content
+Module VI: Avatar Video Generation
+HeyGen integration for creating avatar-based video content
 """
 
-from .imagen_graphics import ImagenGraphicsGenerator
-from .heygen_videos import HeyGenVideoGenerator
-from .logo_overlay import LogoOverlaySystem
+from .avatar_video_manager import AvatarVideoManager, avatar_video_manager
 
-__all__ = [
-    "ImagenGraphicsGenerator",
-    "HeyGenVideoGenerator",
-    "LogoOverlaySystem"
-]
+__all__ = ["AvatarVideoManager", "avatar_video_manager"]

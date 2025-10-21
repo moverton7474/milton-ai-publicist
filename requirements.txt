@@ -33,7 +33,7 @@ feedparser==6.0.10
 # Social Media APIs
 linkedin-api==2.2.0
 tweepy==4.14.0
-instagrapi==2.1.0
+instagrapi==2.2.1
 
 # HTTP & Web Scraping
 aiohttp==3.9.1

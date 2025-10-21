@@ -3,6 +3,8 @@ Logo Overlay System
 Add KSU and partner logos to generated graphics
 """
 
+from __future__ import annotations
+
 import os
 from typing import Optional, List, Literal, Tuple
 from pathlib import Path

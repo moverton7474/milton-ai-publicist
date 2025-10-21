@@ -476,6 +476,82 @@
                 </div>
             </div>
         </div>
+
+        <!-- Avatar Video Generator Section -->
+        <div class="content-queue" style="margin-top: 20px;">
+            <div class="queue-header">
+                <h2>Avatar Video Generator</h2>
+                <div class="connection-status">
+                    <div class="connection-dot connected"></div>
+                    <span>HeyGen Ready</span>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1a202c;">Voice Type</label>
+                    <select id="video-voice-type" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">
+                        <option value="personal">Personal - Warm & Authentic</option>
+                        <option value="professional">Professional - Authoritative</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1a202c;">Scenario</label>
+                    <select id="video-scenario" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">
+                        <option value="team_celebration">Team Celebration</option>
+                        <option value="recruiting_message">Recruiting Message</option>
+                        <option value="partner_thank_you">Partner Thank You</option>
+                        <option value="game_day_hype">Game Day Hype</option>
+                        <option value="weekly_update">Weekly Update</option>
+                        <option value="milestone_announcement">Milestone Announcement</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1a202c;">Dimensions</label>
+                    <select id="video-dimensions" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">
+                        <option value="square">Square (1080x1080) - Instagram/LinkedIn</option>
+                        <option value="vertical">Vertical (1080x1920) - Stories/Reels</option>
+                        <option value="horizontal">Horizontal (1920x1080) - YouTube</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1a202c;">Platform</label>
+                    <select id="video-platform" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="twitter">Twitter/X</option>
+                        <option value="youtube">YouTube</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1a202c;">Additional Context (Optional)</label>
+                <textarea id="video-context" placeholder="Add specific details, names, achievements, etc..." style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; min-height: 100px; resize: vertical;"></textarea>
+            </div>
+
+            <button onclick="generateAvatarVideo()" class="btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 100%; padding: 16px; font-size: 16px; font-weight: 600;">
+                Generate Avatar Video
+            </button>
+
+            <div id="video-generation-status" style="margin-top: 16px; padding: 16px; border-radius: 8px; display: none;"></div>
+
+            <!-- Recent Avatar Videos -->
+            <div id="recent-videos" style="margin-top: 30px;">
+                <h3 style="color: #1a202c; margin-bottom: 16px;">Recent Videos</h3>
+                <div id="videos-container">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading videos...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Reject Modal -->
@@ -816,6 +892,182 @@
                 closeModal();
             }
         };
+
+        // ===== AVATAR VIDEO FUNCTIONS =====
+
+        async function generateAvatarVideo() {
+            const voiceType = document.getElementById('video-voice-type').value;
+            const scenario = document.getElementById('video-scenario').value;
+            const dimensions = document.getElementById('video-dimensions').value;
+            const platform = document.getElementById('video-platform').value;
+            const context = document.getElementById('video-context').value;
+
+            const statusDiv = document.getElementById('video-generation-status');
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = '#eff6ff';
+            statusDiv.style.borderLeft = '4px solid #3b82f6';
+            statusDiv.innerHTML = '<strong>Generating video...</strong><br>Script generation in progress...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/generate-avatar-video`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        voice_type: voiceType,
+                        scenario: scenario,
+                        dimensions: dimensions,
+                        platform: platform,
+                        context: context
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate video');
+                }
+
+                const data = await response.json();
+
+                statusDiv.style.background = '#d1fae5';
+                statusDiv.style.borderLeft = '4px solid #10b981';
+                statusDiv.innerHTML = `
+                    <strong>Video generation started!</strong><br>
+                    Video ID: ${data.video_id}<br>
+                    Script: ${data.script.substring(0, 100)}...<br>
+                    <em>Expected completion: 60-90 seconds</em><br>
+                    <button onclick="checkVideoStatus(${data.video_id})" class="btn" style="margin-top: 8px; padding: 8px 16px;">Check Status</button>
+                `;
+
+                showToast('Video generation started!', 'success');
+
+                // Auto-check status after 90 seconds
+                setTimeout(() => checkVideoStatus(data.video_id), 90000);
+
+                // Refresh videos list
+                setTimeout(loadRecentVideos, 2000);
+
+            } catch (error) {
+                statusDiv.style.background = '#fee2e2';
+                statusDiv.style.borderLeft = '4px solid #ef4444';
+                statusDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                showToast('Failed to generate video', 'error');
+            }
+        }
+
+        async function checkVideoStatus(videoId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/avatar-video-status/${videoId}`);
+                const data = await response.json();
+
+                const statusDiv = document.getElementById('video-generation-status');
+                statusDiv.style.display = 'block';
+
+                if (data.status === 'ready') {
+                    statusDiv.style.background = '#d1fae5';
+                    statusDiv.style.borderLeft = '4px solid #10b981';
+                    statusDiv.innerHTML = `
+                        <strong>Video Ready!</strong><br>
+                        Duration: ${data.duration_seconds}s<br>
+                        <a href="${data.video_url}" target="_blank" class="btn" style="margin-top: 8px; padding: 8px 16px; text-decoration: none;">View Video</a>
+                    `;
+                    showToast('Video is ready!', 'success');
+                    loadRecentVideos();
+                } else if (data.status === 'failed') {
+                    statusDiv.style.background = '#fee2e2';
+                    statusDiv.style.borderLeft = '4px solid #ef4444';
+                    statusDiv.innerHTML = `<strong>Video generation failed</strong><br>${data.error_message || 'Unknown error'}`;
+                    showToast('Video generation failed', 'error');
+                    loadRecentVideos();
+                } else {
+                    statusDiv.style.background = '#eff6ff';
+                    statusDiv.style.borderLeft = '4px solid #3b82f6';
+                    statusDiv.innerHTML = `
+                        <strong>Status:</strong> ${data.status}<br>
+                        <button onclick="checkVideoStatus(${videoId})" class="btn" style="margin-top: 8px; padding: 8px 16px;">Refresh Status</button>
+                    `;
+                }
+            } catch (error) {
+                showToast('Error checking video status', 'error');
+            }
+        }
+
+        async function loadRecentVideos() {
+            const container = document.getElementById('videos-container');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/avatar-videos?limit=10`);
+                const data = await response.json();
+
+                if (!data.videos || data.videos.length === 0) {
+                    container.innerHTML = '<p style="color: #718096; text-align: center; padding: 20px;">No videos yet. Generate your first avatar video!</p>';
+                    return;
+                }
+
+                let html = '<div style="display: grid; gap: 16px;">';
+
+                data.videos.forEach(video => {
+                    const statusColor = {
+                        'ready': '#10b981',
+                        'generating': '#f59e0b',
+                        'processing': '#3b82f6',
+                        'failed': '#ef4444',
+                        'published': '#8b5cf6'
+                    }[video.status] || '#718096';
+
+                    html += `
+                        <div style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                <div>
+                                    <strong>${video.scenario}</strong><br>
+                                    <span style="font-size: 12px; color: #718096;">${video.voice_type} voice • ${video.dimensions}</span>
+                                </div>
+                                <span style="background: ${statusColor}; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+                                    ${video.status}
+                                </span>
+                            </div>
+                            <p style="color: #4b5563; font-size: 14px; margin-bottom: 12px;">${video.script ? video.script.substring(0, 120) + '...' : 'No script'}</p>
+                            ${video.video_url ? `
+                                <a href="${video.video_url}" target="_blank" class="btn" style="padding: 8px 16px; font-size: 14px; text-decoration: none; display: inline-block;">
+                                    Watch Video
+                                </a>
+                            ` : `
+                                <button onclick="checkVideoStatus(${video.id})" class="btn" style="padding: 8px 16px; font-size: 14px;">
+                                    Check Status
+                                </button>
+                            `}
+                            <span style="font-size: 12px; color: #718096; margin-left: 12px;">Created: ${new Date(video.created_at).toLocaleString()}</span>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+
+                // Add statistics if available
+                if (data.statistics) {
+                    html += `
+                        <div style="margin-top: 20px; padding: 16px; background: #f9fafb; border-radius: 8px;">
+                            <strong>Statistics:</strong>
+                            ${data.statistics.total_videos || 0} total videos •
+                            ${data.statistics.completed_videos || 0} completed •
+                            ${data.statistics.in_progress || 0} in progress
+                            ${data.statistics.avg_generation_time ? ` • Avg time: ${Math.round(data.statistics.avg_generation_time)}s` : ''}
+                        </div>
+                    `;
+                }
+
+                container.innerHTML = html;
+
+            } catch (error) {
+                container.innerHTML = '<p style="color: #ef4444;">Error loading videos</p>';
+                console.error('Error loading videos:', error);
+            }
+        }
+
+        // Load recent videos on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadRecentVideos();
+        });
     </script>
 </body>
 </html>

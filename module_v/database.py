@@ -228,7 +228,7 @@ class DatabaseManager:
             time_str = scheduled_time
 
         cursor.execute("""
-            INSERT INTO scheduled_posts (post_id, platform, scheduled_time)
+            INSERT INTO scheduled_posts (post_id, platforms, scheduled_time)
             VALUES (?, ?, ?)
         """, (post_id, platform, time_str))
 
@@ -300,7 +300,7 @@ class DatabaseManager:
 
         if status:
             cursor.execute("""
-                SELECT sp.*, p.content, p.graphic_url, p.video_url
+                SELECT sp.*, p.content, p.voice_type, p.scenario
                 FROM scheduled_posts sp
                 JOIN posts p ON sp.post_id = p.id
                 WHERE sp.status = ?
@@ -308,7 +308,7 @@ class DatabaseManager:
             """, (status,))
         else:
             cursor.execute("""
-                SELECT sp.*, p.content, p.graphic_url, p.video_url
+                SELECT sp.*, p.content, p.voice_type, p.scenario
                 FROM scheduled_posts sp
                 JOIN posts p ON sp.post_id = p.id
                 ORDER BY sp.scheduled_time

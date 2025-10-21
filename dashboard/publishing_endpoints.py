@@ -133,29 +133,16 @@ async def publish_to_platform(post_id: int, platform: str):
 
     # If successful, update database
     if result.get("success"):
-        # Mark post as published
-        db.mark_post_published(post_id, post_url=None)  # URL will be from Zapier webhook callback
-
-        # Log publishing result in database
-        db.log_publishing_result(
-            post_id=post_id,
-            platform=platform,
-            success=True,
-            post_url=None,
-            response_data=result
-        )
+        # Mark post as published (update status to 'published')
+        try:
+            db.update_post(post_id, status='published')
+        except Exception as e:
+            logger.warning(f"Could not update post status: {e}")
 
         logger.info(f"Successfully published post {post_id} to {platform}")
 
     else:
-        # Log failed publishing attempt
-        db.log_publishing_result(
-            post_id=post_id,
-            platform=platform,
-            success=False,
-            error_message=result.get("error"),
-            response_data=result
-        )
+        logger.error(f"Failed to publish post {post_id} to {platform}: {result.get('error')}")
 
         logger.warning(f"Failed to publish post {post_id} to {platform}: {result.get('error')}")
 

@@ -659,14 +659,14 @@
             if (!confirm('Publish this post to LinkedIn?')) return;
 
             try {
-                const response = await fetch(`/api/posts/${postId}/publish`, {
+                const response = await fetch(`/api/publish/posts/${postId}/linkedin`, {
                     method: 'POST'
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    showAlert('success', 'Published to LinkedIn! ' + (data.url || ''));
+                    showAlert('success', 'Published to LinkedIn via Zapier!');
                     await loadStatus();
                     await loadPosts();
 
@@ -674,7 +674,7 @@
                     const updatedPost = await fetch(`/api/posts/${postId}`).then(r => r.json());
                     selectPost(updatedPost);
                 } else {
-                    showAlert('error', data.error || 'Failed to publish. ' + (data.action || ''));
+                    showAlert('error', data.error || 'Failed to publish to LinkedIn');
                 }
             } catch (error) {
                 showAlert('error', 'Error: ' + error.message);

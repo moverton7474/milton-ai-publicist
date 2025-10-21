@@ -26,8 +26,10 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from anthropic import Anthropic
 from module_iii import SocialMediaPublisher, ClerkSocialAuth
+from module_iv.news_monitor import NewsMonitor
 from module_v.database import get_database
 from module_v.analytics_engine import AnalyticsEngine
+from module_vi.avatar_video_manager import avatar_video_manager
 
 # Import Zapier publishing router
 from dashboard.publishing_endpoints import router as publishing_router
@@ -60,6 +62,10 @@ print("[INFO] Database connected: Persistent storage active")
 # Initialize analytics engine
 analytics = AnalyticsEngine()
 print("[INFO] Analytics engine initialized")
+
+# Initialize news monitor
+news_monitor = NewsMonitor()
+print("[INFO] News monitor initialized")
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -834,6 +840,176 @@ async def get_analytics_insights():
 async def get_analytics_dashboard():
     """Get complete analytics summary for dashboard"""
     return analytics.get_dashboard_summary()
+
+
+# ===== NEWS MONITOR ENDPOINTS =====
+
+@app.get("/api/news/monitor")
+async def monitor_news(hours_back: int = 24, min_priority: int = 7):
+    """
+    Monitor news sources and generate post suggestions
+
+    Args:
+        hours_back: How many hours back to check for news (default 24)
+        min_priority: Minimum priority score 1-10 (default 7)
+
+    Returns:
+        List of news items with post suggestions sorted by priority
+    """
+    try:
+        suggestions = news_monitor.monitor_and_suggest(
+            hours_back=hours_back,
+            min_priority=min_priority
+        )
+
+        return {
+            "success": True,
+            "count": len(suggestions),
+            "suggestions": suggestions,
+            "parameters": {
+                "hours_back": hours_back,
+                "min_priority": min_priority
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/news/feeds")
+async def get_news_feeds():
+    """
+    Get raw news feeds without AI analysis
+
+    Returns:
+        List of recent news items from all sources
+    """
+    try:
+        news_items = news_monitor.fetch_rss_feeds()
+
+        return {
+            "success": True,
+            "count": len(news_items),
+            "news": news_items
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ===== HEYGEN AVATAR VIDEO ENDPOINTS =====
+
+@app.post("/api/generate-avatar-video")
+async def generate_avatar_video(request: Request):
+    """Generate an avatar video using HeyGen via Zapier"""
+    try:
+        data = await request.json()
+        user_id = 'milton_overton'  # Default user
+
+        if not data.get('voice_type') or not data.get('scenario'):
+            raise HTTPException(status_code=400, detail="voice_type and scenario required")
+
+        # Generate script using existing content generator
+        from module_ii.content_generator import ContentGenerator
+        content_generator = ContentGenerator()
+        script_result = content_generator.generate(
+            voice_type=data['voice_type'],
+            scenario=data['scenario'],
+            context=data.get('context', '')
+        )
+
+        script = script_result.get('content', '')
+
+        # Optimize for video (60 seconds = ~150 words)
+        if len(script.split()) > 150:
+            script = ' '.join(script.split()[:150]) + '...'
+
+        # Create video record
+        video_id = avatar_video_manager.create_video_record(
+            user_id=user_id,
+            script=script,
+            scenario=data['scenario'],
+            voice_type=data['voice_type'],
+            context=data.get('context', ''),
+            dimensions=data.get('dimensions', 'square'),
+            platform=data.get('platform', 'linkedin')
+        )
+
+        # Trigger Zapier
+        avatar_video_manager.trigger_zapier_workflow(
+            video_id=video_id,
+            script=script,
+            scenario=data['scenario'],
+            voice_type=data['voice_type'],
+            dimensions=data.get('dimensions', 'square'),
+            platform=data.get('platform', 'linkedin')
+        )
+
+        return JSONResponse({
+            "status": "generating",
+            "video_id": video_id,
+            "script": script,
+            "message": "Video generation started. Check back in 60-90 seconds."
+        })
+
+    except Exception as e:
+        logger.error(f"Error in generate_avatar_video: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/avatar-video-complete")
+async def avatar_video_complete(request: Request):
+    """Webhook endpoint - Zapier calls this when video is ready"""
+    try:
+        data = await request.json()
+        video_id = data.get('video_record_id')
+
+        if not video_id:
+            raise HTTPException(status_code=400, detail="video_record_id required")
+
+        avatar_video_manager.update_video_status(
+            video_id=video_id,
+            status=data.get('status', 'ready'),
+            heygen_video_id=data.get('heygen_video_id'),
+            video_url=data.get('video_url'),
+            thumbnail_url=data.get('thumbnail_url'),
+            duration_seconds=data.get('duration'),
+            error_message=data.get('error_message')
+        )
+
+        return JSONResponse({"status": "success", "video_id": video_id})
+
+    except Exception as e:
+        logger.error(f"Error in avatar_video_complete: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/avatar-video-status/{video_id}")
+async def get_avatar_video_status(video_id: int):
+    """Get status of a specific avatar video"""
+    try:
+        video = avatar_video_manager.get_video_by_id(video_id)
+        if not video:
+            raise HTTPException(status_code=404, detail="Video not found")
+
+        return JSONResponse(video)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting video status: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/avatar-videos")
+async def list_avatar_videos(status: str = None, limit: int = 50):
+    """List all avatar videos for current user"""
+    try:
+        user_id = 'milton_overton'  # Default user
+        videos = avatar_video_manager.get_videos_by_user(user_id, status, limit)
+        statistics = avatar_video_manager.get_video_statistics(user_id)
+
+        return JSONResponse({
+            "videos": videos,
+            "statistics": statistics
+        })
+    except Exception as e:
+        logger.error(f"Error listing videos: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 if __name__ == "__main__":
