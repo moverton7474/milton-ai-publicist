@@ -20,13 +20,13 @@ The system consists of 5 core modules:
 
 ## Technology Stack
 
-- **LLM**: Claude (Anthropic API) - Sonnet 4
+- **LLM**: Claude (Anthropic API) - Sonnet 4.5 (claude-sonnet-4-5-20250929)
 - **Language**: Python 3.11+
 - **Framework**: FastAPI + uvicorn
 - **Database**: PostgreSQL 14+
 - **Cache/Queue**: Redis 7+
 - **NLP**: OpenAI Whisper, spaCy, Sentence Transformers
-- **Social APIs**: LinkedIn, Twitter/X, Instagram (Graph API)
+- **Social Publishing**: Zapier webhooks for LinkedIn, Twitter/X, Instagram
 - **AI Avatar**: HeyGen integration
 - **Security**: HashiCorp Vault / AWS Secrets Manager
 - **Monitoring**: Prometheus + Grafana
@@ -81,12 +81,12 @@ python module_iii/scheduler.py --daemon
 ### Core Capabilities
 
 - **Voice-Authentic Content**: NLP-based voice modeling maintains Milton's unique tone across all platforms
-- **Multi-Platform Publishing**: LinkedIn (primary), Twitter/X threads, Instagram captions
-- **AI Avatar Videos**: HeyGen integration for video content showcasing AI innovation
+- **Multi-Platform Publishing**: LinkedIn (primary), Twitter/X threads, Instagram captions via Zapier webhooks
+- **AI Avatar Videos**: HeyGen integration for video content showcasing AI innovation (Creator plan: $24/month)
 - **Real-Time News Monitoring**: 8+ sources continuously scanned for content opportunities
 - **Intelligent Scheduling**: Platform-specific optimal posting times with conflict avoidance
 - **Opportunity Intelligence**: Conference, podcast, and media opportunity scanning with auto-pitch generation
-- **Performance Analytics**: Weekly KPI reports with Share of Voice benchmarking
+- **Performance Analytics**: Weekly KPI reports with Share of Voice benchmarking and enhanced pillar tracking
 - **Human-in-the-Loop**: 10-minute daily approval queue with real-time dashboard
 
 ### Content Strategy
@@ -125,12 +125,18 @@ milton-publicist/
 See [.env.template](.env.template) for required configuration:
 
 - `ANTHROPIC_API_KEY` - Claude API access
-- `HEYGEN_API_KEY` - Avatar video generation
-- `LINKEDIN_EMAIL`, `LINKEDIN_PASSWORD` - LinkedIn posting
-- `TWITTER_API_KEY`, `TWITTER_API_SECRET`, etc. - Twitter/X posting
+- `HEYGEN_API_KEY` - Avatar video generation (see [HEYGEN_SETUP_GUIDE.md](HEYGEN_SETUP_GUIDE.md))
+- `ZAPIER_LINKEDIN_WEBHOOK` - LinkedIn publishing webhook
+- `ZAPIER_TWITTER_WEBHOOK` - Twitter/X publishing webhook (see [ZAPIER_SETUP_GUIDE.md](ZAPIER_SETUP_GUIDE.md))
+- `ZAPIER_INSTAGRAM_WEBHOOK` - Instagram publishing webhook (see [ZAPIER_SETUP_GUIDE.md](ZAPIER_SETUP_GUIDE.md))
 - `DATABASE_URL` - PostgreSQL connection string
 - `REDIS_URL` - Redis connection string
 - `VAULT_ADDR`, `VAULT_TOKEN` - HashiCorp Vault (optional, production recommended)
+
+### Platform Setup Guides
+
+- **HeyGen Avatar Videos**: [HEYGEN_SETUP_GUIDE.md](HEYGEN_SETUP_GUIDE.md) - Complete setup for AI avatar videos ($24/month Creator plan)
+- **Zapier Publishing**: [ZAPIER_SETUP_GUIDE.md](ZAPIER_SETUP_GUIDE.md) - Multi-platform publishing setup for LinkedIn, Twitter, and Instagram
 
 ### Feature Flags
 
@@ -321,14 +327,15 @@ pytest --cov=. tests/
 - ✅ LinkedIn-only posting
 - ✅ Local credential storage
 
-### Phase 2 - In Progress
+### Phase 2 - Completed
+- ✅ Twitter/X integration via Zapier webhooks
+- ✅ Instagram integration via Zapier webhooks
+- ✅ Enhanced analytics schema (migration #6)
 - ⬜ Module IV (opportunity scanning + pitches)
-- ⬜ Twitter/X integration
 - ⬜ HashiCorp Vault integration
 
 ### Phase 3 - Planned
-- ⬜ Module V (full analytics)
-- ⬜ Instagram integration
+- ⬜ Module V (full analytics dashboard)
 - ⬜ Auto-learning system
 - ⬜ Competitive intelligence
 
@@ -356,7 +363,40 @@ Built with:
 - FastAPI (web framework)
 - spaCy (NLP processing)
 
+## Deployment Checklist
+
+### This Week (2-3 hours)
+
+- [ ] **Activate HeyGen Creator Plan** ($24/month)
+  - Sign up at [heygen.com](https://www.heygen.com)
+  - Follow [HEYGEN_SETUP_GUIDE.md](HEYGEN_SETUP_GUIDE.md) for complete setup
+  - Create Milton's custom avatar
+  - Clone Milton's voice
+  - Configure API credentials
+
+- [ ] **Set up Zapier Publishing** (Starter plan: $19.99/month)
+  - Create Twitter/X publishing webhook
+  - Create Instagram publishing webhook
+  - Follow [ZAPIER_SETUP_GUIDE.md](ZAPIER_SETUP_GUIDE.md) for setup
+  - Test each platform integration
+
+- [ ] **Run Database Migration #6**
+  ```bash
+  psql $DATABASE_URL -f database/migration_006_analytics_enhancements.sql
+  ```
+
+- [ ] **Verify Claude Model Update**
+  - Confirm all content generation uses `claude-sonnet-4-5-20250929`
+  - Test LinkedIn post generation
+  - Test Twitter thread generation
+  - Test avatar script generation
+
+### Total Monthly Cost
+- HeyGen Creator: $24/month (15 min video credits)
+- Zapier Starter: $19.99/month (750 tasks/month)
+- **Total**: $43.99/month
+
 ---
 
-**Last Updated**: October 19, 2025
-**System Status**: MVP Phase - Active Development
+**Last Updated**: October 22, 2025
+**System Status**: Production Ready - Multi-Platform Publishing Active
