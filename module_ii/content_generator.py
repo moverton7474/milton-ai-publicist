@@ -85,7 +85,7 @@ class ContentGenerator:
 
         # Generate with Claude
         response = self.client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-5-20250929",
             max_tokens=2000,
             temperature=0.7,
             system=self._build_system_prompt("linkedin"),
@@ -163,7 +163,7 @@ class ContentGenerator:
             prompt = self._build_twitter_prompt(opportunity)
 
         response = self.client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-5-20250929",
             max_tokens=1500,
             temperature=0.7,
             system=self._build_system_prompt("twitter"),
@@ -268,7 +268,7 @@ The use of the avatar ITSELF is part of the message - demonstrating he practices
 Generate the script with clear [PAUSE] markers and emphasis indicators:"""
 
         response = self.client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-5-20250929",
             max_tokens=1000,
             temperature=0.8,
             system="You are a professional video script writer specializing in executive communication.",
