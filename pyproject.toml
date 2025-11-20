@@ -1,0 +1,13 @@
+[project]
+name = "milton-ai-publicist"
+version = "1.0.0"
+description = "AI-powered publicist for Milton Overton"
+requires-python = ">=3.11"
+
+[project.scripts]
+# Tell Vercel where to find the FastAPI app
+app = "dashboard.app:app"
+
+[tool.vercel]
+# Alternative way to specify the app for Vercel
+app = "dashboard.app:app"
